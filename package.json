@@ -6,6 +6,12 @@
   "repository": "git@github.com:GatsbyCentral/gatsby-plugin-htaccess-redirects.git",
   "author": "GatsbyCentral https://www.gatsbycentral.com/",
   "license": "MIT",
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "apache",
+    "htaccess"
+  ],
   "dependencies": {
     "fs-extra": "^7.0.0",
     "lodash": "^4.17.11",
