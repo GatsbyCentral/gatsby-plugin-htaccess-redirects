@@ -22,6 +22,22 @@ Here's an example:
 },
 ```
 
+## Advanced Options
+
+By default the plugin will build one line per redirect like this:
+
+```htaccess
+RewriteRule ^from-path/?$ /to-path/ [R=301,L]
+```
+
+In apache2 this should cause a redirect from either `/from-path` or `/from-path/` to `/to-path/`. This is built from the pattern `RewriteRule ^%1/?$ %2 [R=%3,L]`. This pattern receives the following replacements:
+
+* `%1` -> `fromPath` (with the leading and trailing slashes removed)
+* `%2` -> `toPath` (guaranteed to have a leading and trailing slash)
+* `%3` -> Either 302 or 301 if `isPermanent` is `false` or `true` respectively
+
+The option is called `pattern` and can be set like `prefix` and `suffix`.
+
 ## Notes
 
 It's currently untested (although expected to work) with a `pathPrefix`. Please
