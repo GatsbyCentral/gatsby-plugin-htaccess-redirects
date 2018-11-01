@@ -5,5 +5,8 @@
   "main": "gatsby-node.js",
   "repository": "git@github.com:GatsbyCentral/gatsby-plugin-htaccess-redirects.git",
   "author": "GatsbyCentral https://www.gatsbycentral.com/",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra": "^7.0.0"
+  }
 }
