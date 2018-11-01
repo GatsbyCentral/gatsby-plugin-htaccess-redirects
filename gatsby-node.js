@@ -2,38 +2,61 @@ const fs = require("fs-extra");
 const fp = require("lodash/fp");
 const path = require("path");
 
-// This returns a function with the value of `pathPrefix` bound.
-const createLineForRedirectFactory = pathPrefix => ({
+// The default pattern to build the redirects
+// %1 = fromPath
+// %2 = toPath
+// %3 = 301 or 302 dependin on isPermanent === true or isPermanent === false
+const defaultPattern = "RewriteRule ^%1/?$ %2 [R=%3,L]";
+
+const trimSlashes = fp.trimChars("/");
+
+// This returns a function with the value of `pattern` bound.
+const redirectToHtaccessStringFactory = pattern => ({
   fromPath,
   toPath,
   isPermanent
 }) =>
-  `Redirect ${
-    isPermanent ? "301" : "302"
-  } ${pathPrefix}${fromPath} ${pathPrefix}${toPath}`;
+  pattern
+    // Ensure neither leading nor trailing slash
+    .replace("%1", trimSlashes(fromPath))
+    // Ensure both leading and trailin slashes
+    .replace("%2", `/${trimSlashes(toPath)}/`)
+    .replace("%3", isPermanent ? "301" : "302");
+// `Redirect ${
+//   isPermanent ? "301" : "302"
+// } ${pathPrefix}${fromPath} ${pathPrefix}${toPath}`;
 
 exports.onPostBuild = ({ store }, pluginOptions) => {
-  const { redirects, program, config } = store.getState();
+  const {
+    // This is the default pattern
+    pattern = defaultPattern,
+    prefix,
+    suffix
+  } = pluginOptions;
+  const { redirects, program } = store.getState();
 
-  // Create a `createLineForRedirect()` function and pass a value for
+  // Create a `redirectToHtaccessString()` function and pass a value for
   // `pathPrefix` if one is required, otherwise an empty string.
-  const createLineForRedirect = createLineForRedirectFactory(
-    program.prefixPaths ? config.pathPrefix : ""
-  );
+  const redirectToHtaccessString = redirectToHtaccessStringFactory(pattern);
+
+  // NOTE: We could include teh `pathPrefix` like this, but probably don't need
+  // to. We assume that the `.htaccess` file will be installed at `/path/` if
+  // the Gatsby site is being deployed to `/path/`. This is untested and will
+  // need checked if this plugin should support `pathPrefix`.
+  // const { program, config } = store.getState();
+  // const pathPrefix = program.prefixPaths ? config.pathPrefix : ""
 
   // The path where we want to write the file `public/.htaccess`
   const htaccessPath = path.join(program.directory, "public/.htaccess");
 
   // Generate the contents of the `.htaccess` file as a single string. This
   // wraps the prefix and suffix around one line per redirect. We iterate over
-  // the array of redirects passing each one to `createLineForRedirect()`, then
+  // the array of redirects passing each one to `redirectToHtaccessString()`, then
   // call `.join()` on the resulting array to create a single string with each
   // line separated by a "\n".
-  const htaccessContent = `${
-    pluginOptions.prefix ? pluginOptions.prefix + "\n" : ""
-  }${fp.map(createLineForRedirect, redirects).join("\n")}${
-    pluginOptions.suffix ? "\n" + pluginOptions.suffix : ""
-  }`;
+  const htaccessContent = `${prefix ? prefix + "\n" : ""}${fp
+    .map(redirectToHtaccessString, redirects)
+    .join("\n")}${suffix ? "\n" + suffix : ""}`;
 
   // Return a promise chain
   return (
