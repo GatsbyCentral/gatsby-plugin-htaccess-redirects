@@ -26,7 +26,7 @@ Here's an example:
 
 By default the plugin will build one line per redirect like this:
 
-```htaccess
+```
 RewriteRule ^from-path/?$ /to-path/ [R=301,L]
 ```
 
