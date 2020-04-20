@@ -66,7 +66,7 @@ exports.onPostBuild = ({ store }, pluginOptions) => {
       .ensureFile(htaccessPath)
       .then(() => {
         // Write the contents of the file
-        return fs.writeFile(htaccessPath, htaccessContent);
+        return fs.writeFile(htaccessPath, htaccessContent, {'flag':'a'});
       })
       .catch(e => {
         // Log any errors thrown
