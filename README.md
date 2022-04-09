@@ -12,7 +12,7 @@ appended to the built `.htaccess` file respectively.
 
 Here's an example:
 
-```
+```javascript
 {
   resolve: `gatsby-plugin-htaccess-redirects`,
   options: {
@@ -21,6 +21,9 @@ Here's an example:
   },
 },
 ```
+
+NOTE: It's recommended to create an empty `.htaccess` file in `static/`. This
+plugin will **append** to an existing `.htaccess` file.
 
 ## Advanced Options
 
