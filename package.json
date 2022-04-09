@@ -1,6 +1,6 @@
 {
   "name": "gatsby-plugin-htaccess-redirects",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Gatsby plugin to render redirects into a .htaccess file at public/.htaccess",
   "main": "gatsby-node.js",
   "repository": "git@github.com:GatsbyCentral/gatsby-plugin-htaccess-redirects.git",
