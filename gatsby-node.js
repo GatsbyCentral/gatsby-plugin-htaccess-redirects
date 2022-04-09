@@ -61,7 +61,7 @@ exports.onPostBuild = ({ store }, pluginOptions) => {
   // Return a promise chain
   return (
     fs
-      // Make sure that our .htacess file and all its required parent
+      // Make sure that our .htaccess file and all its required parent
       // directories exist
       .ensureFile(htaccessPath)
       .then(() => {
