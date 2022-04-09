@@ -54,9 +54,9 @@ exports.onPostBuild = ({ store }, pluginOptions) => {
   // the array of redirects passing each one to `redirectToHtaccessString()`, then
   // call `.join()` on the resulting array to create a single string with each
   // line separated by a "\n".
-  const htaccessContent = `${prefix ? prefix + "\n" : ""}${fp
+  const htaccessContent = `\n${prefix ? prefix + "\n" : ""}${fp
     .map(redirectToHtaccessString, redirects)
-    .join("\n")}${suffix ? "\n" + suffix : ""}`;
+    .join("\n")}${suffix ? "\n" + suffix : ""}\n`;
 
   // Return a promise chain
   return (
