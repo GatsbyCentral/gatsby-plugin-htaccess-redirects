@@ -11,17 +11,15 @@ const defaultPattern = "RewriteRule ^%1/?$ %2 [R=%3,L]";
 const trimSlashes = fp.trimChars("/");
 
 // This returns a function with the value of `pattern` bound.
-const redirectToHtaccessStringFactory = pattern => ({
-  fromPath,
-  toPath,
-  isPermanent
-}) =>
-  pattern
-    // Ensure neither leading nor trailing slash
-    .replace("%1", trimSlashes(fromPath))
-    // Ensure both leading and trailin slashes
-    .replace("%2", `/${trimSlashes(toPath)}/`)
-    .replace("%3", isPermanent ? "301" : "302");
+const redirectToHtaccessStringFactory =
+  (pattern) =>
+  ({ fromPath, toPath, isPermanent }) =>
+    pattern
+      // Ensure neither leading nor trailing slash
+      .replace("%1", trimSlashes(fromPath))
+      // Ensure both leading and trailin slashes
+      .replace("%2", `/${trimSlashes(toPath)}/`)
+      .replace("%3", isPermanent ? "301" : "302");
 // `Redirect ${
 //   isPermanent ? "301" : "302"
 // } ${pathPrefix}${fromPath} ${pathPrefix}${toPath}`;
@@ -31,7 +29,7 @@ exports.onPostBuild = ({ store }, pluginOptions) => {
     // This is the default pattern
     pattern = defaultPattern,
     prefix,
-    suffix
+    suffix,
   } = pluginOptions;
   const { redirects, program } = store.getState();
 
@@ -66,9 +64,9 @@ exports.onPostBuild = ({ store }, pluginOptions) => {
       .ensureFile(htaccessPath)
       .then(() => {
         // Write the contents of the file
-        return fs.writeFile(htaccessPath, htaccessContent, {'flag':'a'});
+        return fs.writeFile(htaccessPath, htaccessContent, { flag: "a" });
       })
-      .catch(e => {
+      .catch((e) => {
         // Log any errors thrown
         console.error("onPostBuild error #hq0Kxa", JSON.stringify(e));
       })
